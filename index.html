@@ -2,107 +2,148 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Will You Be My Valentine?</title>
 
 <style>
     body {
+        margin: 0;
+        overflow: hidden;
+        font-family: 'Segoe UI', sans-serif;
+        background: linear-gradient(135deg, #ff9a9e, #fad0c4);
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
         text-align: center;
-        font-family: Arial, sans-serif;
-        background-color: #ffe6f0;
-        margin-top: 150px;
     }
 
     h1 {
-        font-size: 40px;
-        color: #d63384;
+        font-size: 3rem;
+        color: white;
+        margin-bottom: 40px;
     }
 
-    #buttons {
-        margin-top: 40px;
-        position: relative;
-        height: 200px;
-    }
-
-    button {
-        padding: 15px 30px;
+    .btn {
+        padding: 15px 35px;
         font-size: 20px;
         border: none;
-        border-radius: 10px;
+        border-radius: 12px;
         cursor: pointer;
+        transition: 0.3s ease;
         position: absolute;
-        transition: 0.2s;
     }
 
     #yes {
-        background-color: #28a745;
+        background: #28a745;
         color: white;
-        left: 40%;
     }
 
     #no {
-        background-color: #dc3545;
+        background: #dc3545;
         color: white;
-        left: 55%;
     }
 
     #message {
-        margin-top: 40px;
+        position: absolute;
+        bottom: 60px;
         font-size: 22px;
-        color: #ff0066;
+        color: white;
         height: 30px;
+    }
+
+    .heart {
+        position: fixed;
+        color: rgba(255,255,255,0.7);
+        animation: float 6s linear infinite;
+        font-size: 20px;
+    }
+
+    @keyframes float {
+        from { transform: translateY(100vh); }
+        to { transform: translateY(-10vh); }
     }
 </style>
 </head>
-
 <body>
 
 <h1>Will you be my Valentine? ❤️</h1>
 
-<div id="buttons">
-    <button id="yes">Yes 💖</button>
-    <button id="no">No 💔</button>
-</div>
+<button id="yes" class="btn">Yes 💖</button>
+<button id="no" class="btn">No 💔</button>
 
 <div id="message"></div>
 
+<!-- Confetti library -->
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
 <script>
-    const noBtn = document.getElementById("no");
     const yesBtn = document.getElementById("yes");
+    const noBtn = document.getElementById("no");
     const message = document.getElementById("message");
 
-    let yesSize = 20;
+    let yesScale = 1;
+
     const messages = [
         "Are you sure? 🥺",
         "Really sure? 😢",
         "Please think again 😭",
-        "I'll be very sad 💔",
+        "I'll be heartbroken 💔",
         "Pleaseeeee 🙏",
-        "Don't break my heart 💘"
+        "Don’t do this 😩"
     ];
 
-    noBtn.addEventListener("mouseover", function() {
+    // Initial button placement
+    yesBtn.style.left = "40%";
+    yesBtn.style.top = "55%";
 
-        // Move NO button randomly
-        const x = Math.random() * 300;
-        const y = Math.random() * 150;
+    noBtn.style.left = "55%";
+    noBtn.style.top = "55%";
 
-        noBtn.style.left = x + "px";
-        noBtn.style.top = y + "px";
+    noBtn.addEventListener("mouseenter", () => {
+        const maxX = window.innerWidth - noBtn.offsetWidth;
+        const maxY = window.innerHeight - noBtn.offsetHeight;
 
-        // Increase YES size
-        yesSize += 5;
-        yesBtn.style.fontSize = yesSize + "px";
-        yesBtn.style.padding = (yesSize/2) + "px";
+        const randomX = Math.random() * maxX;
+        const randomY = Math.random() * maxY;
+
+        noBtn.style.left = randomX + "px";
+        noBtn.style.top = randomY + "px";
+
+        // Increase YES button size
+        yesScale += 0.1;
+        yesBtn.style.transform = `scale(${yesScale})`;
 
         // Show emotional message
         const randomMessage = messages[Math.floor(Math.random() * messages.length)];
         message.innerText = randomMessage;
     });
 
-    yesBtn.addEventListener("click", function(){
-        document.body.innerHTML = "<h1>Yayyyyy!!! 💕💕💕</h1>";
+    yesBtn.addEventListener("click", () => {
+        document.body.innerHTML = "<h1 style='color:white;'>YAYYYY!!! 💕🎉</h1>";
+        confetti({
+            particleCount: 200,
+            spread: 100,
+            origin: { y: 0.6 }
+        });
     });
 
+    // Floating hearts
+    function createHeart() {
+        const heart = document.createElement("div");
+        heart.classList.add("heart");
+        heart.innerHTML = "💖";
+        heart.style.left = Math.random() * 100 + "vw";
+        heart.style.fontSize = Math.random() * 20 + 15 + "px";
+        document.body.appendChild(heart);
+
+        setTimeout(() => {
+            heart.remove();
+        }, 6000);
+    }
+
+    setInterval(createHeart, 500);
 </script>
 
 </body>
